@@ -1,0 +1,14 @@
+{
+    "schemaVersion": 2,
+    "dockerfileLines": [
+        "FROM node:12-alpine",
+        "RUN mkdir -p /usr/src/app",
+        "WORKDIR /usr/src/app",
+        "COPY ./ /usr/src/app",
+        "RUN npm install && npm run build",
+        "ENV NODE_ENV production",
+        "ENV PORT 80",
+        "EXPOSE 80",
+        "CMD [ \"npm\", \"run\", \"serve\", \"--\", \"-l\", \"$PORT\" ]"
+    ]
+}
