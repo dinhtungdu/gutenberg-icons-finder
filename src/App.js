@@ -1,20 +1,32 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import * as wpIcons from "@wordpress/icons";
-import { omit, filter } from "lodash";
+import { omit, filter, debounce } from "lodash";
 import fuzzysort from "fuzzysort";
+import { renderToString } from "react-dom/server";
+
+let allIcons = [];
+
+for (const icon in omit(wpIcons, "Icon")) {
+  allIcons.push({
+    name: icon,
+    svg: wpIcons[icon],
+  });
+}
 
 function App() {
-  let allIcons = [];
-
-  for (const icon in omit(wpIcons, "Icon")) {
-    allIcons.push({
-      name: icon,
-      svg: wpIcons[icon],
-    });
-  }
-
   const [keyword, setKeyword] = useState("");
   const [icons, setIcons] = useState(allIcons);
+  const [activeIcon, setActiveIcon] = useState({});
+  const [copied, setCopied] = useState(false);
+
+  const hideCopied = useCallback(
+    debounce(() => setCopied(false), 2000),
+    []
+  );
+
+  useEffect(() => {
+    hideCopied();
+  }, [copied]);
 
   useEffect(() => {
     if (!keyword) {
@@ -31,6 +43,21 @@ function App() {
       )
     );
   }, [keyword]);
+
+  const Icon = ({ icon }) => (
+    <button
+      className={`p-4 rounded-sm cursor-pointer hover:shadow-lg ${
+        icon.name === activeIcon.name && "icon-active"
+      }`}
+      onClick={() => {
+        setActiveIcon(icon);
+        navigator.clipboard.writeText(icon.name);
+        setCopied(true);
+      }}
+    >
+      <wpIcons.Icon icon={icon.svg} />
+    </button>
+  );
 
   return (
     <div className="container h-screen max-w-screen-sm px-4 py-8 mx-auto">
@@ -50,6 +77,7 @@ function App() {
           placeholder="Search icons..."
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
+          onFocus={() => setActiveIcon({})}
         />
         <wpIcons.Icon
           className="absolute text-gray-500 pointer-events-none fill-current top-5 left-2"
@@ -70,15 +98,55 @@ function App() {
         {icons.map((icon, index) => (
           <Icon key={index} icon={icon} />
         ))}
+        {icons.length === 0 && (
+          <p className="w-full text-lg font-bold text-center">Nothing found!</p>
+        )}
       </div>
+
+      {Object.keys(activeIcon).length > 0 && (
+        <div className="fixed w-full max-w-screen-sm px-4 transform -translate-x-1/2 bottom-8 left-1/2">
+          <div className="flex items-center justify-between px-4 py-2 font-mono bg-gray-800 rounded-md">
+            <span
+              onClick={() => {
+                navigator.clipboard.writeText(activeIcon.name);
+                setCopied(true);
+              }}
+              className="flex items-center text-sm font-bold text-white"
+            >
+              {activeIcon.name}
+              <small
+                style={{
+                  fontSize: ".5em",
+                  padding: "2px",
+                  display: copied ? "block" : "none",
+                }}
+                className="ml-2 font-thin leading-none text-gray-400 border border-gray-400 rounded-sm"
+              >
+                COPIED
+              </small>
+            </span>
+            <span className="flex items-center text-white fill-current">
+              <wpIcons.Icon icon={activeIcon.svg} />
+              <small
+                onClick={() => {
+                  const blob = new Blob([renderToString(activeIcon.svg)]);
+                  const element = document.createElement("a");
+                  element.download = `${activeIcon.name}.svg`;
+                  element.href = window.URL.createObjectURL(blob);
+                  element.click();
+                  element.remove();
+                }}
+                className="flex items-center px-2 py-1 ml-4 text-xs text-green-400 border border-green-500 rounded-md cursor-pointer pxx2 "
+              >
+                <wpIcons.Icon size="16" icon={wpIcons.download} />
+                <span className="text-xs font-medium">SVG</span>
+              </small>
+            </span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
 export default App;
-
-const Icon = ({ icon }) => (
-  <button className="p-4 rounded-sm cursor-pointer hover:shadow-lg">
-    <wpIcons.Icon icon={icon.svg} />
-  </button>
-);
