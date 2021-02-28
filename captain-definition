@@ -5,9 +5,9 @@
         "RUN mkdir -p /usr/src/app",
         "WORKDIR /usr/src/app",
         "COPY ./ /usr/src/app",
-        "RUN npm install && npm run build",
+        "RUN yarn && yarn build",
         "ENV PORT 80",
         "EXPOSE 80",
-        "CMD [ \"npm\", \"run\", \"serve\", \"--\", \"-l\", \"$PORT\" ]"
+        "CMD [ \"yarn\", \"serve\", \"--\", \"-l\", \"$PORT\" ]"
     ]
 }
