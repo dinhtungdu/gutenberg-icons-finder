@@ -8,7 +8,6 @@
         "RUN yarn && yarn build",
         "ENV PORT 80",
         "EXPOSE 80",
-        "RUN yarn global add serve",
-        "CMD [ \"serve\", \"-s\", \"build\", \"-l\", \"$PORT\" ]"
+        "CMD [ \"yarn\", \"serve", \"--\", \"-l\", \"$PORT\" ]"
     ]
 }
