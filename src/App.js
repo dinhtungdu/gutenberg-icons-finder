@@ -64,24 +64,25 @@ function App() {
         setCopied(true);
       }}
     >
-      <wpIcons.Icon icon={icon.svg} />
+      <wpIcons.Icon icon={icon.svg} className="fill-current dark:text-gray-100" />
     </button>
   );
 
   return (
-    <div className="container max-w-screen-sm px-4 mx-auto py-28">
+    <div className="dark:bg-gray-900">
+      <main className="container max-w-screen-sm px-4 mx-auto py-28">
       <header className="text-center">
-        <h1 className="text-5xl font-bold leading-tight">
-          Gutenberg Icons Finder
+        <h1 className="text-5xl font-bold leading-tight dark:text-gray-100">
+          <span className="dark:text-green-400">Gutenberg</span> Icons Finder
         </h1>
-        <p className="mt-4 text-xl leading-normal">
+        <p className="mt-4 text-xl leading-normal dark:text-gray-100">
           Just another icon finder for developers building Gutenberg blocks.
         </p>
       </header>
 
-      <div className="relative my-12">
+      <section className="relative my-12">
         <input
-          className="w-full px-12 py-6 rounded-sm shadow-md"
+          className="w-full px-12 py-6 rounded-sm shadow-md dark:bg-gray-800"
           type="text"
           placeholder="Search icons..."
           value={keyword}
@@ -101,7 +102,7 @@ function App() {
           icon={wpIcons.close}
           onClick={() => setKeyword("")}
         />
-      </div>
+      </section>
 
       <div className="flex flex-wrap justify-between gap-2">
         {icons.map((icon, index) => (
@@ -112,14 +113,14 @@ function App() {
         )}
       </div>
 
-        <h2 className="pt-8 mt-8 mb-4 text-3xl font-bold border-t ">How to use Gutenberg icons in custom blocks?</h2>
+        <h2 className="pt-8 mt-8 mb-4 text-3xl font-bold border-t dark:text-gray-100 ">How to use Gutenberg icons in custom blocks?</h2>
       <div className="flex">
-        <pre className="w-5/6 p-2 overflow-x-scroll text-sm bg-gray-200 rounded-md">{
+        <pre className="w-5/6 p-2 overflow-x-scroll text-sm bg-gray-200 rounded-md dark:bg-gray-700 dark:text-gray-100">{
 `import { Icon, ${previewIcon.name} } from '@wordpress/icons'
 
 <Icon icon={${previewIcon.name}} size={32} /> `
         }</pre>
-        <wpIcons.Icon icon={previewIcon.svg} size={32} className="self-center flex-shrink-0 w-1/6"/>
+        <wpIcons.Icon icon={previewIcon.svg} size={32} className="self-center flex-shrink-0 w-1/6 fill-current dark:text-gray-100"/>
       </div>
 
       {Object.keys(activeIcon).length > 0 && (
@@ -164,6 +165,7 @@ function App() {
           </div>
         </div>
       )}
+      </main>
     </div>
   );
 }
