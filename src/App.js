@@ -69,7 +69,7 @@ function App() {
   );
 
   return (
-    <div className="container max-w-screen-sm px-4 pt-8 mx-auto pb-28">
+    <div className="container max-w-screen-sm px-4 mx-auto py-28">
       <header className="text-center">
         <h1 className="text-5xl font-bold leading-tight">
           Gutenberg Icons Finder
