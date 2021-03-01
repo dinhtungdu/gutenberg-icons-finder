@@ -18,6 +18,7 @@ function App() {
   const [icons, setIcons] = useState(allIcons);
   const [activeIcon, setActiveIcon] = useState({});
   const [copied, setCopied] = useState(false);
+  const [previewIcon, setPreviewIcon] = useState(allIcons[0]);
 
   const hideCopied = useCallback(
     debounce(() => setCopied(false), 2000),
@@ -27,6 +28,14 @@ function App() {
   useEffect(() => {
     hideCopied();
   }, [copied]);
+
+  useEffect(() => {
+    if (Object.keys(activeIcon).length > 0) {
+      setPreviewIcon(activeIcon)
+    } else {
+      setPreviewIcon(allIcons[0])
+    }
+  }, [activeIcon]);
 
   useEffect(() => {
     if (!keyword) {
@@ -60,7 +69,7 @@ function App() {
   );
 
   return (
-    <div className="container max-w-screen-sm px-4 py-8 mx-auto">
+    <div className="container max-w-screen-sm px-4 pt-8 mx-auto pb-28">
       <header className="text-center">
         <h1 className="text-5xl font-bold leading-tight">
           Gutenberg Icons Finder
@@ -103,6 +112,16 @@ function App() {
         )}
       </div>
 
+        <h2 className="pt-8 mt-8 mb-4 text-3xl font-bold border-t ">How to use Gutenberg icons in custom blocks?</h2>
+      <div className="flex">
+        <pre className="w-5/6 p-2 overflow-x-scroll text-sm bg-gray-200 rounded-md">{
+`import { Icon, ${previewIcon.name} } from '@wordpress/icons'
+
+<Icon icon={${previewIcon.name}} size={32} /> `
+        }</pre>
+        <wpIcons.Icon icon={previewIcon.svg} size={32} className="self-center flex-shrink-0 w-1/6"/>
+      </div>
+
       {Object.keys(activeIcon).length > 0 && (
         <div className="fixed w-full max-w-screen-sm px-4 transform -translate-x-1/2 bottom-8 left-1/2">
           <div className="flex items-center justify-between px-4 py-2 font-mono bg-gray-800 rounded-md">
@@ -136,7 +155,7 @@ function App() {
                   element.click();
                   element.remove();
                 }}
-                className="flex items-center px-2 py-1 ml-4 text-xs text-green-400 border border-green-500 rounded-md cursor-pointer pxx2 "
+                className="flex items-center px-2 py-1 ml-4 text-xs text-green-400 border border-green-500 rounded-md cursor-pointer fill-current "
               >
                 <wpIcons.Icon size="16" icon={wpIcons.download} />
                 <span className="text-xs font-medium">SVG</span>
